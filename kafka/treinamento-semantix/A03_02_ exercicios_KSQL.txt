@@ -44,9 +44,8 @@ ksql> create stream usuario_csv (id int, nome varchar) with (kafka_topic='msg-us
 -----------------------------------------------
 5. Visualizar o Stream usuario_csv
 -----------------------------------------------
-SET 'auto.offset.reset' = 'earliest';
+select * from USUARIO_CSV EMIT CHANGES;
 
-ksql> select * from usuario_csv EMIT CHANGES;
 +------------------+------------------+------------------+------------------+
 |ROWTIME           |ROWKEY            |ID                |NOME              |
 +------------------+------------------+------------------+------------------+
