@@ -1,17 +1,15 @@
-No contexto Big Data, o processamento de dados em batch (lote) é bastante conhecido desde o surgimento do Hadoop. 
 
-Devido aos seus recursos e robustez, o modelo de programação MapReduce do Hadoop tornou-se uma das principais estruturas de processamento de dados em batch. 
+## Objetivo deste respositório
 
-Com o passar do tempo boa parte dos desafios neste campo foram bem solucionados e desde então a comunidade mudou sua atenção para outro desafio, o processamento de dados em streaming.
+Exercícios acadêmicos para a prática de conceitos do Stream processing.
 
-Algumas pessoas já leram ou ouviram algo relacionado com a palavra streaming, por exemplo, ao comentar sobre plataformas de transmissão de áudio e vídeo como Spotify, Amazon Music, Youtube e Netflix ou aplicações mais específicas como sistemas de monitoramento de bolsas de valores ou aplicativos de coleta de dados enviados por sensores (IoT). 
+## Conceitos
 
-Mas, em um cenário de análise de dados, o que seria processamento de dados em streaming?
+### Stream processing
 
-O processamento de dados em batch executa uma determinada tarefa considerando um conjunto de dados de entrada estático e de tamanho fixo para produzir o resultado final, ou seja, o processamento é interrompido quando chega ao final do conjunto de dados. 
+Stream Processing (ou Processamento de Fluxo em tradução livre), consistem em um modelo de processamento semelhante a SIMD (single instruction, multiple data), possibilitando que aplicações possam explorar limitadas formas de processamento paralelo. Essas aplicações podem usar múltiplas unidades de processamento, como FPU's (unidade de ponto flutuante) de uma GPU ou Field-programmable gate array, sem gerir explicitamente a alocação, sincronização ou comunicação entre as unidades.
 
-Por outro lado, o processamento em stream consiste em executar uma determinada tarefa considerando fluxos de dados ilimitados. Dessa forma, o processamento é contínuo e de longa duração, como se estivéssemos trabalhando com bases de dados infinitas.
-
+O stream processing simplifica softwares e hardwares paralelos restringindo a computação paralela que pode ser executada. Dado um conjunto de dados (um fluxo ou stream), uma série de operações (funções do kernel) é aplicada a cada elemento na corrente, ou seja, um streaming uniforme, onde uma operação é aplicada a todos os elementos do fluxo. Hardware de stream processing podem usar scoreboarding, por exemplo, para lançar DMA em tempo de execução, quando dependências tornam-se conhecidas. A eliminação de gestão manual do DMA reduz a complexidade do software.
 
 
-https://www.alura.com.br/artigos/spark-streaming
+
