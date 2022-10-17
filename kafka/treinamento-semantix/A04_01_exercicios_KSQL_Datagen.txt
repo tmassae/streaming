@@ -1,0 +1,148 @@
+-----------------------------------------------
+Exercícios - KSQL Datagen
+-----------------------------------------------
+
+docker exec --it ksql-datagen bash
+
+ksql-datagen
+
+-----------------------------------------------
+1. Criar o tópico users com os dados do ksql-datagen
+
+quickstart=users
+topic=users
+-----------------------------------------------
+
+EXECUTAR O EXERCICIO NO TERMINAL 1
+
+ksql-datagen bootstrap-server=broker:29092 schemaRegistryUrl=schema-registry:8081 quickstart=users topic=users
+
+-----------------------------------------------
+2. Visualizar os dados do tópico no Ksql
+-----------------------------------------------
+
+EXECUTAR O EXERCICIO NO TERMINAL 2
+
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+
+ksql> print users from beginning limit 10;
+Key format: KAFKA_STRING
+Value format: JSON or KAFKA_STRING
+rowtime: 10/15/22 6:03:25 PM UTC, key: User_8, value: {"registertime":1505833018302,"userid":"User_8","regionid":"Region_8","gender":"OTHER"}
+rowtime: 10/15/22 6:03:25 PM UTC, key: User_2, value: {"registertime":1501044021386,"userid":"User_2","regionid":"Region_2","gender":"OTHER"}
+rowtime: 10/15/22 6:03:25 PM UTC, key: User_6, value: {"registertime":1517480179318,"userid":"User_6","regionid":"Region_5","gender":"OTHER"}
+rowtime: 10/15/22 6:03:25 PM UTC, key: User_5, value: {"registertime":1499161763056,"userid":"User_5","regionid":"Region_4","gender":"FEMALE"}
+rowtime: 10/15/22 6:03:25 PM UTC, key: User_9, value: {"registertime":1511429255834,"userid":"User_9","regionid":"Region_4","gender":"FEMALE"}
+rowtime: 10/15/22 6:03:25 PM UTC, key: User_8, value: {"registertime":1516052691738,"userid":"User_8","regionid":"Region_3","gender":"OTHER"}
+rowtime: 10/15/22 6:03:25 PM UTC, key: User_2, value: {"registertime":1514734296206,"userid":"User_2","regionid":"Region_6","gender":"OTHER"}
+rowtime: 10/15/22 6:03:25 PM UTC, key: User_6, value: {"registertime":1496018309078,"userid":"User_6","regionid":"Region_3","gender":"FEMALE"}
+rowtime: 10/15/22 6:03:25 PM UTC, key: User_7, value: {"registertime":1510202789950,"userid":"User_7","regionid":"Region_4","gender":"OTHER"}
+rowtime: 10/15/22 6:03:25 PM UTC, key: User_6, value: {"registertime":1490317407164,"userid":"User_6","regionid":"Region_2","gender":"MALE"}
+
+ksql> show streams;
+
+ Stream Name         | Kafka Topic                 | Format
+---------------------------------------------------------------
+ KSQL_PROCESSING_LOG | default_ksql_processing_log | JSON
+ USUARIO_CSV         | msg-usuario-csv             | DELIMITED
+--------------------------------------------------------------
+
+-----------------------------------------------
+3. Criar o stream users_raw com os dados do tópico users com as seguintes propriedades
+
+kafka_topic='users’
+value_format='JSON’
+key = 'userid’
+timestamp='viewtime’
+-----------------------------------------------
+
+ksql> CREATE STREAM users_raw (userid VARCHAR, registertime BIGINT) WITH (KAFKA_TOPIC='users', VALUE_FORMAT='JSON', KEY='userid', TIMESTAMP='registertime');
+
+ Message
+----------------
+ Stream created
+----------------
+
+-----------------------------------------------
+4. Visualizar a estrutura da Stream  users_raw
+-----------------------------------------------
+
+ksql> show streams;
+
+ Stream Name         | Kafka Topic                 | Format
+---------------------------------------------------------------
+ KSQL_PROCESSING_LOG | default_ksql_processing_log | JSON
+ USERS_RAW           | users                       | JSON
+ USUARIO_CSV         | msg-usuario-csv             | DELIMITED
+---------------------------------------------------------------
+
+-----------------------------------------------
+5. Visualizar os dados da Stream  users_raw
+-----------------------------------------------
+
+EXECUTAR O EXERCICIO NO TERMINAL 1
+
+ksql-datagen bootstrap-server=broker:29092 schemaRegistryUrl=schema-registry:8081 quickstart=users topic=users
+
+
+
+EXECUTAR O EXERCICIO NO TERMINAL 2
+
+select * from users_raw;
+
+
+
+-----------------------------------------------
+6. Repetir todo o proceso para o tópico pageviews
+
+ksql-datagen quickstart=pageviews topic= pageviews
+-----------------------------------------------
+
+-----> DATAGEN::
+
+ksql> ksql-datagen bootstrap-server=broker:29092 schemaRegistryUrl=schema-registry:8081 quickstart=pageviews topic=pageviews
+
+
+-----> KSQL
+
+CREATE STREAM pageviews_raw (userid VARCHAR, registertime BIGINT) WITH (KAFKA_TOPIC='pageviews', VALUE_FORMAT='JSON', KEY='userid', TIMESTAMP='registertime');
+
+
+ Message
+----------------
+ Stream created
+----------------
+
+ksql> show streams;
+
+Stream Name         | Kafka Topic                 | Format
+---------------------------------------------------------------
+KSQL_PROCESSING_LOG | default_ksql_processing_log | JSON
+PAGEVIEWS_RAW       | pageviews                   | JSON
+USERS_RAW           | users                       | JSON
+USUARIO_CSV         | msg-usuario-csv             | DELIMITED
+---------------------------------------------------------------
+
+ksql> show tables;
+
+ Table Name | Kafka Topic | Format | Windowed
+----------------------------------------------
+----------------------------------------------
+
+ksql> select * from pageviews_raw;
+
+Key format: KAFKA_BIGINT or KAFKA_DOUBLE
+Value format: JSON or KAFKA_STRING
+rowtime: 10/15/22 6:04:23 PM UTC, key: 1665857063469, value: {"viewtime":1665857063469,"userid":"User_7","pageid":"Page_33"}
+rowtime: 10/15/22 6:04:23 PM UTC, key: 1665857063744, value: {"viewtime":1665857063744,"userid":"User_5","pageid":"Page_23"}
+rowtime: 10/15/22 6:04:23 PM UTC, key: 1665857063745, value: {"viewtime":1665857063745,"userid":"User_8","pageid":"Page_27"}
+rowtime: 10/15/22 6:04:23 PM UTC, key: 1665857063745, value: {"viewtime":1665857063745,"userid":"User_6","pageid":"Page_17"}
+rowtime: 10/15/22 6:04:23 PM UTC, key: 1665857063745, value: {"viewtime":1665857063745,"userid":"User_7","pageid":"Page_99"}
+rowtime: 10/15/22 6:04:23 PM UTC, key: 1665857063745, value: {"viewtime":1665857063745,"userid":"User_2","pageid":"Page_78"}
+rowtime: 10/15/22 6:04:23 PM UTC, key: 1665857063746, value: {"viewtime":1665857063746,"userid":"User_1","pageid":"Page_41"}
+rowtime: 10/15/22 6:04:23 PM UTC, key: 1665857063746, value: {"viewtime":1665857063746,"userid":"User_1","pageid":"Page_95"}
+rowtime: 10/15/22 6:04:23 PM UTC, key: 1665857063746, value: {"viewtime":1665857063746,"userid":"User_3","pageid":"Page_33"}
+rowtime: 10/15/22 6:04:23 PM UTC, key: 1665857063746, value: {"viewtime":1665857063746,"userid":"User_6","pageid":"Page_47"}
+
+
+
